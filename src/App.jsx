@@ -1,8 +1,10 @@
+import CoachCard from "./components/CoachCard";
 import { useEffect, useState } from "react";
 import "./App.css";
+import MacroInputs from "./components/MacroInputs";
+import RestaurantPicker from "./components/RestaurantPicker";
 import Header from "./components/Header";
 import MacroCard from "./components/MacroCard";
-
 const macroGoals = {
   calories: 1860,
   protein: 150,
@@ -101,78 +103,18 @@ function App() {
     <div className="app">
       <Header />
 
-      <div className="macro-input-card">
-        <h2>Enter Today&apos;s Macros</h2>
+<MacroInputs
+  todayMacros={todayMacros}
+  updateMacro={updateMacro}
+/>
 
-        <label>
-          Calories
-          <input
-            type="text"
-            inputMode="numeric"
-            name="calories"
-            placeholder="0"
-            value={todayMacros.calories}
-            onChange={updateMacro}
-          />
-        </label>
+<RestaurantPicker
+  restaurant={restaurant}
+  setRestaurant={setRestaurant}
+  setMessage={setMessage}
+/>
 
-        <label>
-          Protein
-          <input
-            type="text"
-            inputMode="numeric"
-            name="protein"
-            placeholder="0"
-            value={todayMacros.protein}
-            onChange={updateMacro}
-          />
-        </label>
-
-        <label>
-          Carbs
-          <input
-            type="text"
-            inputMode="numeric"
-            name="carbs"
-            placeholder="0"
-            value={todayMacros.carbs}
-            onChange={updateMacro}
-          />
-        </label>
-
-        <label>
-          Fat
-          <input
-            type="text"
-            inputMode="numeric"
-            name="fat"
-            placeholder="0"
-            value={todayMacros.fat}
-            onChange={updateMacro}
-          />
-        </label>
-      </div>
-
-      <div className="restaurant-card">
-        <h2>Where Are You Eating?</h2>
-
-        <select
-          value={restaurant}
-          onChange={(event) => {
-            setRestaurant(event.target.value);
-            setMessage("");
-          }}
-        >
-          <option>Home</option>
-          <option>Taco Amigo</option>
-          <option>Costa Vida</option>
-          <option>Chick-fil-A</option>
-          <option>Texas Roadhouse</option>
-          <option>R&R BBQ</option>
-        </select>
-      </div>
-
-      <MacroCard
+<MacroCard
         calories={numericMacros.calories}
         protein={numericMacros.protein}
         carbs={numericMacros.carbs}
@@ -182,15 +124,10 @@ function App() {
 
       <button onClick={coachMe}>🍔 Coach Me</button>
 
-      {message !== "" && (
-        <div className="coach-message">
-          <h2>🍔 Coach Recommendation</h2>
-
-          <div className="coach-location">📍 {restaurant}</div>
-
-          <p>{message}</p>
-        </div>
-      )}
+      <CoachCard
+  message={message}
+  restaurant={restaurant}
+/>
     </div>
   );
 }
