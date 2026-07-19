@@ -114,4 +114,77 @@ button:hover {
 
 .coach-message p {
   margin: 0;
+}.macro-input-card {
+  margin-bottom: 20px;
+  padding: 18px;
+  background: #f8fafc;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.macro-input-card h2 {
+  margin-top: 0;
+}
+
+.macro-input-card label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.macro-input-card label:last-child {
+  margin-bottom: 0;
+}
+
+.macro-input-card input {
+  width: 110px;
+  padding: 8px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 16px;
+}.restaurant-card {
+  margin-bottom: 20px;
+  padding: 18px;
+  background: #f8fafc;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.restaurant-card h2 {
+  margin-top: 0;
+}
+
+.restaurant-card select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 16px;
+  background: white;
+}.coach-message {
+  background: #ffffff;
+  border: 2px solid #22c55e;
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: left;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+}
+
+.coach-message h2 {
+  margin-top: 0;
+  color: #15803d;
+}
+
+.coach-location {
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #334155;
+}
+
+.coach-message p {
+  line-height: 1.6;
 }

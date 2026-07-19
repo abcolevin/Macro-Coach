@@ -31,11 +31,11 @@ function MacroRow({ label, current, goal, unit = "" }) {
   );
 }
 
-function MacroCard(props) {
-  const remainingCalories = 1860 - props.calories;
-  const remainingProtein = 150 - props.protein;
-  const remainingCarbs = 180 - props.carbs;
-  const remainingFat = 60 - props.fat;
+function MacroCard({ calories, protein, carbs, fat, goals }) {
+const remainingCalories = goals.calories - calories;
+const remainingProtein = goals.protein - protein;
+const remainingCarbs = goals.carbs - carbs;
+const remainingFat = goals.fat - fat;
 
   return (
     <section className="macro-card">
@@ -43,28 +43,28 @@ function MacroCard(props) {
 
       <MacroRow
         label="Calories"
-        current={props.calories}
-        goal={1860}
+        current={calories}
+goal={goals.calories}
       />
 
       <MacroRow
         label="Protein"
-        current={props.protein}
-        goal={150}
+        current={protein}
+goal={goals.protein}
         unit="g"
       />
 
       <MacroRow
         label="Carbs"
-        current={props.carbs}
-        goal={180}
+        current={carbs}
+goal={goals.carbs}
         unit="g"
       />
 
       <MacroRow
         label="Fat"
-        current={props.fat}
-        goal={60}
+        current={fat}
+goal={goals.fat}
         unit="g"
       />
 
