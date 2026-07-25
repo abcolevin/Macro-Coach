@@ -1,7 +1,7 @@
 function MacroInputs({ todayMacros, updateMacro }) {
   return (
-    <div className="macro-input-card">
-      <h2>Enter Today&apos;s Macros</h2>
+    <div className="macro-inputs">
+      <h2>Today's Progress</h2>
 
       <label>
         Calories
@@ -11,18 +11,6 @@ function MacroInputs({ todayMacros, updateMacro }) {
           name="calories"
           placeholder="0"
           value={todayMacros.calories}
-          onChange={updateMacro}
-        />
-      </label>
-
-      <label>
-        Protein
-        <input
-          type="text"
-          inputMode="numeric"
-          name="protein"
-          placeholder="0"
-          value={todayMacros.protein}
           onChange={updateMacro}
         />
       </label>
@@ -50,7 +38,27 @@ function MacroInputs({ todayMacros, updateMacro }) {
           onChange={updateMacro}
         />
       </label>
-    </div>
+
+      <label>
+        Protein
+        <input
+          type="text"
+          inputMode="numeric"
+          name="protein"
+          placeholder="0"
+          value={todayMacros.protein}
+          onChange={updateMacro}
+        />
+      </label>
+   <div className="remaining-today">
+  <h2>Remaining Today</h2>
+
+  <p>Calories remaining will appear here.</p>
+  <p>Carbs remaining will appear here.</p>
+  <p>Fat remaining will appear here.</p>
+  <p>Protein remaining will appear here.</p>
+</div>
+ </div>
   );
 }
 

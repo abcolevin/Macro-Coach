@@ -1,3 +1,6 @@
+import Dashboard from "./components/Dashboard";
+import { getTopMealRecommendations } from "./utils/recommendationEngine";
+import meals from "./data/meals";
 import CoachCard from "./components/CoachCard";
 import { useEffect, useState } from "react";
 import "./App.css";
@@ -39,7 +42,26 @@ function App() {
     carbs: Number(todayMacros.carbs) || 0,
     fat: Number(todayMacros.fat) || 0,
   };
+const remainingMacros = {
+  calories: Math.max(0, macroGoals.calories - numericMacros.calories),
+  carbs: Math.max(0, macroGoals.carbs - numericMacros.carbs),
+  fat: Math.max(0, macroGoals.fat - numericMacros.fat),
+  protein: Math.max(0, macroGoals.protein - numericMacros.protein),
+};
 
+const allMeals = Object.entries(meals).flatMap(
+  ([restaurantName, restaurantMeals]) =>
+    restaurantMeals.map((meal) => ({
+      ...meal,
+      restaurant: restaurantName,
+    }))
+);
+
+const dashboardRecommendations = getTopMealRecommendations(
+  allMeals,
+  remainingMacros,
+  3
+);
   useEffect(() => {
     localStorage.setItem("todayMacros", JSON.stringify(todayMacros));
   }, [todayMacros]);
@@ -56,56 +78,41 @@ function App() {
       [name]: limitedValue,
     }));
 
-    setMessage("");
-  }
+  setMessage("");
+}
 
-  function coachMe() {
-    const remainingCalories =
-      macroGoals.calories - numericMacros.calories;
+function coachMe() {
+  const remainingProtein = 150 - Number(todayMacros.protein);
+  const remainingCarbs = 180 - Number(todayMacros.carbs);
+  const remainingFat = 60 - Number(todayMacros.fat);
 
-    const remainingProtein =
-      macroGoals.protein - numericMacros.protein;
+  const restaurantMeals = meals[restaurant] || [];
 
-    const remainingCarbs =
-      macroGoals.carbs - numericMacros.carbs;
+ const remainingMacros = {
+  calories: remainingCalories,
+  protein: remainingProtein,
+  carbs: remainingCarbs,
+  fat: remainingFat,
+};
 
-    const remainingFat =
-      macroGoals.fat - numericMacros.fat;
+const recommendations = getTopMealRecommendations(
+  restaurantMeals,
+  remainingMacros,
+  3
+);
 
-    let recommendation = "";
-
-    if (restaurant === "Home") {
-      recommendation =
-        "Choose lean protein such as chicken, turkey, cottage cheese, or a protein shake. Add fruit, rice, potatoes, or vegetables if you still need carbohydrates.";
-    } else if (restaurant === "Taco Amigo") {
-      recommendation =
-        "Start with 2 soft flour tacos. Add a small fry only when your remaining calories, carbohydrates, and fat allow it.";
-    } else if (restaurant === "Costa Vida") {
-      recommendation =
-        "Choose a chicken protein bowl with extra chicken. Go light on cheese, dressing, tortilla strips, and creamy sauces.";
-    } else if (restaurant === "Chick-fil-A") {
-      recommendation =
-        "Choose the grilled chicken sandwich with fruit. Add grilled nuggets when protein is still your biggest need.";
-    } else if (restaurant === "Texas Roadhouse") {
-      recommendation =
-        "Choose an 8–11 oz sirloin with steamed vegetables or a plain sweet potato. Limit rolls and butter when fat is close to the goal.";
-    } else if (restaurant === "R&R BBQ") {
-      recommendation =
-        "Choose turkey or chicken. Add vegetables or sweet potato fries only when your remaining fat allows it.";
-    }
-
-    setMessage(
-      `You have ${remainingCalories} calories, ${remainingProtein}g protein, ${remainingCarbs}g carbs, and ${remainingFat}g fat remaining. ${recommendation}`
-    );
-  }
+setMessage(recommendations);
+}
 
   return (
     <div className="app">
       <Header />
+      <Dashboard />
 
 <MacroInputs
   todayMacros={todayMacros}
   updateMacro={updateMacro}
+  macroGoals={macroGoals}
 />
 
 <RestaurantPicker
