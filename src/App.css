@@ -1,190 +1,219 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  background: #edf2f7;
-  font-family: Arial, Helvetica, sans-serif;
+  min-width: 320px;
+  background: #eef3f8;
+  color: #172033;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, Helvetica, sans-serif;
+}
+
+button,
+input {
+  font: inherit;
 }
 
 .app {
-  max-width: 500px;
-  margin: 40px auto;
-  background: white;
-  border-radius: 18px;
-  padding: 30px;
-  text-align: center;
-  box-shadow: 0 8px 24px rgba(0,0,0,.12);
+  width: min(100% - 24px, 680px);
+  margin: 24px auto;
+  padding: 28px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 14px 40px rgba(31, 45, 61, 0.12);
 }
 
-h1 {
-  margin-bottom: 10px;
-}
-
-section {
-  margin: 25px 0;
-  padding: 20px;
-  background: #f8fafc;
-  border-radius: 12px;
-  text-align: left;
-}
-
-section h2 {
-  margin-top: 0;
+header {
+  margin-bottom: 24px;
   text-align: center;
 }
 
-button {
-  width: 100%;
-  padding: 15px;
-  font-size: 20px;
-  border: none;
-  border-radius: 12px;
-  background: #2563eb;
-  color: white;
-  cursor: pointer;
+header h1 {
+  margin: 0 0 6px;
+  font-size: clamp(2rem, 8vw, 3rem);
+  line-height: 1;
 }
 
-button:hover {
-  background: #1d4ed8;
-}.macro-row {
-  margin-bottom: 18px;
-}
-
-.macro-row:last-child {
-  margin-bottom: 0;
-}
-
-.macro-row-top {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 7px;
-  font-size: 16px;
-}
-
-.progress-track {
-  width: 100%;
-  height: 12px;
-  background: #dbe3ed;
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: #2563eb;
-  border-radius: 999px;
-  transition: width 0.3s ease;
-}.progress-green {
-  background: #22c55e;
-}
-
-.progress-orange {
-  background: #f59e0b;
-}
-
-.progress-red {
-  background: #ef4444;
-}.remaining-card {
-  margin-top: 12px;
-  background: #f8fafc;
-  border-radius: 12px;
-  padding: 16px;
-}
-
-.remaining-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.remaining-row:last-child {
-  border-bottom: none;
-}.coach-message {
-  margin-top: 18px;
-  padding: 16px;
-  background: #eff6ff;
-  border: 2px solid #2563eb;
-  border-radius: 12px;
-  text-align: left;
-}
-
-.coach-message strong {
-  display: block;
-  margin-bottom: 8px;
-}
-
-.coach-message p {
+header p {
   margin: 0;
-}.macro-input-card {
-  margin-bottom: 20px;
-  padding: 18px;
-  background: #f8fafc;
-  border-radius: 12px;
+  color: #6c7280;
+  font-size: 1.05rem;
+}
+
+.dashboard {
+  display: grid;
+  gap: 20px;
+}
+
+.dashboard-section,
+.recommendation-card {
+  margin: 0;
+  padding: 22px;
+  background: #f7f9fc;
+  border: 1px solid #e7ebf1;
+  border-radius: 18px;
   text-align: left;
 }
 
-.macro-input-card h2 {
-  margin-top: 0;
+.dashboard-section h2,
+.recommendation-card h2 {
+  margin: 0 0 18px;
 }
 
-.macro-input-card label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 12px;
+.macro-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.macro-grid label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  color: #565d6d;
+  font-weight: 700;
+}
+
+.macro-grid input {
+  width: 100%;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid #cad2df;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #172033;
+  font-size: 1.1rem;
+  font-weight: 700;
+  outline: none;
+}
+
+.macro-grid input:focus {
+  border-color: #2458d3;
+  box-shadow: 0 0 0 3px rgba(36, 88, 211, 0.14);
+}
+
+.macro-grid label span {
+  color: #7a8291;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.remaining-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.remaining-grid div {
+  display: grid;
+  gap: 4px;
+  padding: 14px 8px;
+  background: #ffffff;
+  border: 1px solid #e4e8ef;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.remaining-grid strong {
+  color: #172033;
+  font-size: 1.3rem;
+}
+
+.remaining-grid span {
+  color: #747c8b;
+  font-size: 0.82rem;
+}
+
+.recommendation-card {
+  padding: 24px;
+  background: linear-gradient(145deg, #173b8f, #2458d3);
+  border: 0;
+  color: #ffffff;
+  box-shadow: 0 12px 28px rgba(36, 88, 211, 0.22);
+}
+
+.recommendation-card .eyebrow {
+  margin: 0 0 14px;
+  color: #dfe8ff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.recommendation-card h2 {
+  margin-bottom: 8px;
+  color: #ffffff;
+  font-size: 1.75rem;
+}
+
+.recommendation-card h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.2rem;
+  line-height: 1.4;
+}
+
+.meal-macros {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.meal-macros span {
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  text-align: center;
+  font-size: 0.92rem;
   font-weight: 600;
 }
 
-.macro-input-card label:last-child {
-  margin-bottom: 0;
+.other-recommendations {
+  display: grid;
+  gap: 12px;
 }
 
-.macro-input-card input {
-  width: 110px;
-  padding: 8px 10px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  font-size: 16px;
-}.restaurant-card {
-  margin-bottom: 20px;
-  padding: 18px;
-  background: #f8fafc;
-  border-radius: 12px;
-  text-align: left;
-}
-
-.restaurant-card h2 {
-  margin-top: 0;
-}
-
-.restaurant-card select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  font-size: 16px;
-  background: white;
-}.coach-message {
+.other-recommendations article {
+  display: grid;
+  gap: 5px;
+  padding: 15px;
   background: #ffffff;
-  border: 2px solid #22c55e;
-  border-radius: 16px;
-  padding: 20px;
-  margin-top: 20px;
-  text-align: left;
-  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  border: 1px solid #e4e8ef;
+  border-radius: 14px;
 }
 
-.coach-message h2 {
-  margin-top: 0;
-  color: #15803d;
+.other-recommendations strong {
+  color: #172033;
+  font-size: 1.05rem;
 }
 
-.coach-location {
-  font-weight: bold;
-  margin-bottom: 12px;
-  color: #334155;
+.other-recommendations span {
+  color: #646c7a;
+  line-height: 1.4;
 }
 
-.coach-message p {
-  line-height: 1.6;
+@media (max-width: 560px) {
+  .app {
+    width: min(100% - 16px, 680px);
+    margin: 8px auto;
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .macro-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .remaining-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-section,
+  .recommendation-card {
+    padding: 18px;
+  }
 }

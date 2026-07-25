@@ -9,9 +9,9 @@ import RestaurantPicker from "./components/RestaurantPicker";
 import Header from "./components/Header";
 import MacroCard from "./components/MacroCard";
 const macroGoals = {
-  calories: 1860,
+  calories: 1959,
   protein: 150,
-  carbs: 180,
+  carbs: 205,
   fat: 60,
 };
 
@@ -105,38 +105,18 @@ setMessage(recommendations);
 }
 
   return (
-    <div className="app">
-      <Header />
-      <Dashboard />
+  <div className="app">
+    <Header />
 
-<MacroInputs
-  todayMacros={todayMacros}
-  updateMacro={updateMacro}
-  macroGoals={macroGoals}
-/>
-
-<RestaurantPicker
-  restaurant={restaurant}
-  setRestaurant={setRestaurant}
-  setMessage={setMessage}
-/>
-
-<MacroCard
-        calories={numericMacros.calories}
-        protein={numericMacros.protein}
-        carbs={numericMacros.carbs}
-        fat={numericMacros.fat}
-        goals={macroGoals}
-      />
-
-      <button onClick={coachMe}>🍔 Coach Me</button>
-
-      <CoachCard
-  message={message}
-  restaurant={restaurant}
-/>
-    </div>
-  );
+    <Dashboard
+      recommendations={dashboardRecommendations}
+      remainingMacros={remainingMacros}
+      todayMacros={todayMacros}
+      updateMacro={updateMacro}
+      macroGoals={macroGoals}
+    />
+  </div>
+);
 }
 
 export default App;

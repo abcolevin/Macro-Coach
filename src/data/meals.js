@@ -1,6 +1,6 @@
 const meals = {
   Home: [
-
+    {
       name: "Grilled Chicken Plate",
       calories: 520,
       protein: 55,
@@ -41,26 +41,6 @@ const meals = {
       carbs: 55,
       fat: 18,
     },
-    const remainingMacros = {
-  calories: Math.max(0, macroGoals.calories - numericMacros.calories),
-  carbs: Math.max(0, macroGoals.carbs - numericMacros.carbs),
-  fat: Math.max(0, macroGoals.fat - numericMacros.fat),
-  protein: Math.max(0, macroGoals.protein - numericMacros.protein),
-};
-
-const allMeals = Object.entries(meals).flatMap(
-  ([restaurantName, restaurantMeals]) =>
-    restaurantMeals.map((meal) => ({
-      ...meal,
-      restaurant: restaurantName,
-    }))
-);
-
-const dashboardRecommendations = getTopMealRecommendations(
-  allMeals,
-  remainingMacros,
-  3
-);
   ],
 
   "Chick-fil-A": [
