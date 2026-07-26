@@ -6,6 +6,8 @@ function Dashboard({
   macroGoals,
   toggleFavorite,
   isFavorite,
+  eatingLocation,
+  setEatingLocation,
 }) {
   const dinnerRecommendations = recommendations?.slice(0, 3) || [];
 
@@ -63,6 +65,30 @@ function Dashboard({
         ? "1px solid #86efac"
         : "1px solid #dbe2ea",
     };
+  }
+
+  function LocationButton({ value, label }) {
+    const selected = eatingLocation === value;
+
+    return (
+      <button
+        type="button"
+        onClick={() => setEatingLocation(value)}
+        style={{
+          padding: "12px 8px",
+          borderRadius: "10px",
+          border: selected
+            ? "2px solid #2563eb"
+            : "1px solid #cbd5e1",
+          backgroundColor: selected ? "#eff6ff" : "#ffffff",
+          color: selected ? "#1d4ed8" : "#334155",
+          fontWeight: "800",
+          cursor: "pointer",
+        }}
+      >
+        {label}
+      </button>
+    );
   }
 
   function DinnerCard({ meal, index }) {
@@ -284,6 +310,33 @@ function Dashboard({
       </section>
 
       <section className="dashboard-section">
+        <div style={{ marginBottom: "20px" }}>
+          <p
+            style={{
+              margin: "0 0 8px",
+              color: "#475569",
+              fontWeight: "800",
+            }}
+          >
+            Where are you eating?
+          </p>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "8px",
+            }}
+          >
+            <LocationButton value="anywhere" label="🌎 Anywhere" />
+            <LocationButton value="home" label="🏠 Home" />
+            <LocationButton
+              value="restaurant"
+              label="🍽 Restaurant"
+            />
+          </div>
+        </div>
+
         <div style={{ marginBottom: "18px" }}>
           <p
             style={{
@@ -324,7 +377,7 @@ function Dashboard({
               textAlign: "center",
             }}
           >
-            Enter today's macros to see your dinner choices.
+            No dinner choices are available for this selection.
           </div>
         )}
       </section>

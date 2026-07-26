@@ -32,6 +32,7 @@ function getMealId(meal) {
 function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [selectedRestaurant, setSelectedRestaurant] = useState("");
+  const [eatingLocation, setEatingLocation] = useState("anywhere");
   const [todayMacros, setTodayMacros] = useState(emptyMacros);
   const [favoriteIds, setFavoriteIds] = useState([]);
 
@@ -99,8 +100,20 @@ function App() {
       }))
   );
 
+  const filteredMeals = allMeals.filter((meal) => {
+    if (eatingLocation === "home") {
+      return meal.restaurant === "Home";
+    }
+
+    if (eatingLocation === "restaurant") {
+      return meal.restaurant !== "Home";
+    }
+
+    return true;
+  });
+
   const dashboardRecommendations = getTopMealRecommendations(
-    allMeals,
+    filteredMeals,
     remainingMacros,
     3
   );
@@ -248,6 +261,8 @@ function App() {
           macroGoals={macroGoals}
           toggleFavorite={toggleFavorite}
           isFavorite={isFavorite}
+          eatingLocation={eatingLocation}
+          setEatingLocation={setEatingLocation}
         />
       )}
 
