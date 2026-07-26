@@ -5,7 +5,8 @@ import { getTopMealRecommendations } from "./utils/recommendationEngine";
 import meals from "./data/meals";
 import "./App.css";
 import RestaurantBrowser from "./components/RestaurantBrowser";
-
+import { db } from "./firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 const macroGoals = {
   calories: 1959,
   carbs: 205,
@@ -44,7 +45,27 @@ const [selectedRestaurant, setSelectedRestaurant] = useState("");
       return [];
     }
   });
+useEffect(() => {
+  async function loadCloudData() {
+    const docRef = doc(db, "users", "ryan");
 
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+
+      if (data.todayMacros) {
+        setTodayMacros(data.todayMacros);
+      }
+
+      if (data.favoriteIds) {
+        setFavoriteIds(data.favoriteIds);
+      }
+    }
+  }
+
+  loadCloudData();
+}, []);
   const numericMacros = {
     calories: Number(todayMacros.calories) || 0,
     carbs: Number(todayMacros.carbs) || 0,
@@ -83,19 +104,29 @@ const [selectedRestaurant, setSelectedRestaurant] = useState("");
     favoriteIds.includes(getMealId(meal))
   );
 
-  useEffect(() => {
-    localStorage.setItem(
-      "todayMacros",
-      JSON.stringify(todayMacros)
-    );
-  }, [todayMacros]);
+ useEffect(() => {
+  localStorage.setItem(
+    "todayMacros",
+    JSON.stringify(todayMacros)
+  );
 
-  useEffect(() => {
-    localStorage.setItem(
-      "favoriteMeals",
-      JSON.stringify(favoriteIds)
-    );
-  }, [favoriteIds]);
+  setDoc(doc(db, "users", "ryan"), {
+    todayMacros,
+    favoriteIds,
+  });
+}, [todayMacros, favoriteIds]);
+
+ useEffect(() => {
+  localStorage.setItem(
+    "favoriteMeals",
+    JSON.stringify(favoriteIds)
+  );
+
+  setDoc(doc(db, "users", "ryan"), {
+    todayMacros,
+    favoriteIds,
+  });
+}, [favoriteIds, todayMacros]);
 
   function updateMacro(event) {
     const { name, value } = event.target;
