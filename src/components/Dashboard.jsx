@@ -4,9 +4,38 @@ function Dashboard({
   todayMacros,
   updateMacro,
   macroGoals,
+  toggleFavorite,
+  isFavorite,
 }) {
   const topRecommendation = recommendations?.[0];
   const otherRecommendations = recommendations?.slice(1, 3) || [];
+
+  function FavoriteButton({ meal }) {
+    const favorite = isFavorite?.(meal);
+
+    return (
+      <button
+        type="button"
+        onClick={() => toggleFavorite?.(meal)}
+        aria-label={
+          favorite
+            ? `Remove ${meal.name} from favorites`
+            : `Add ${meal.name} to favorites`
+        }
+        title={favorite ? "Remove from Favorites" : "Add to Favorites"}
+        style={{
+          border: "none",
+          background: "transparent",
+          fontSize: "26px",
+          cursor: "pointer",
+          padding: "4px",
+          lineHeight: 1,
+        }}
+      >
+        {favorite ? "⭐" : "☆"}
+      </button>
+    );
+  }
 
   return (
     <main className="dashboard">
@@ -99,8 +128,25 @@ function Dashboard({
 
         {topRecommendation ? (
           <>
-            <h2>🥇 {topRecommendation.restaurant}</h2>
-            <h3>{topRecommendation.name}</h3>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                gap: "12px",
+              }}
+            >
+              <div>
+                <h2 style={{ marginBottom: "6px" }}>
+                  🥇 {topRecommendation.restaurant}
+                </h2>
+                <h3 style={{ marginTop: 0 }}>
+                  {topRecommendation.name}
+                </h3>
+              </div>
+
+              <FavoriteButton meal={topRecommendation} />
+            </div>
 
             <div className="meal-macros">
               <span>{topRecommendation.calories} cal</span>
@@ -120,11 +166,28 @@ function Dashboard({
 
           <div className="other-recommendations">
             {otherRecommendations.map((meal, index) => (
-              <article key={`${meal.restaurant}-${meal.name}`}>
-                <strong>
-                  {index === 0 ? "🥈" : "🥉"} {meal.restaurant}
-                </strong>
-                <span>{meal.name}</span>
+              <article
+                key={`${meal.restaurant}-${meal.name}`}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: "12px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "grid",
+                    gap: "4px",
+                  }}
+                >
+                  <strong>
+                    {index === 0 ? "🥈" : "🥉"} {meal.restaurant}
+                  </strong>
+                  <span>{meal.name}</span>
+                </div>
+
+                <FavoriteButton meal={meal} />
               </article>
             ))}
           </div>
