@@ -3,6 +3,10 @@ function numberOrZero(value) {
   return Number.isFinite(number) ? number : 0;
 }
 
+function calculateDifference(mealValue, remainingValue) {
+  return remainingValue - mealValue;
+}
+
 function calculateMealScore(meal, remainingMacros) {
   const mealCalories = numberOrZero(meal.calories);
   const mealCarbs = numberOrZero(meal.carbs);
@@ -14,48 +18,78 @@ function calculateMealScore(meal, remainingMacros) {
   const remainingFat = numberOrZero(remainingMacros.fat);
   const remainingProtein = numberOrZero(remainingMacros.protein);
 
-  let score = 100;
+  const caloriesLeft = calculateDifference(
+    mealCalories,
+    remainingCalories
+  );
 
-  if (remainingProtein > 0) {
-    const proteinCoverage = Math.min(mealProtein / remainingProtein, 1);
-    score += proteinCoverage * 45;
+  const carbsLeft = calculateDifference(
+    mealCarbs,
+    remainingCarbs
+  );
+
+  const fatLeft = calculateDifference(
+    mealFat,
+    remainingFat
+  );
+
+  const proteinLeft = calculateDifference(
+    mealProtein,
+    remainingProtein
+  );
+
+  let score = 1000;
+
+  score -= Math.abs(caloriesLeft) * 0.2;
+  score -= Math.abs(carbsLeft) * 3;
+  score -= Math.abs(fatLeft) * 8;
+  score -= Math.abs(proteinLeft) * 4;
+
+  if (Math.abs(carbsLeft) <= 10) {
+    score += 100;
   }
 
-  if (mealCalories > remainingCalories) {
-    score -= (mealCalories - remainingCalories) * 0.18;
-  } else {
-    score += 12;
+  if (Math.abs(fatLeft) <= 10) {
+    score += 100;
   }
 
-  if (remainingCarbs <= 0) {
-    score -= mealCarbs * 1.25;
-  } else if (mealCarbs > remainingCarbs) {
-    score -= (mealCarbs - remainingCarbs) * 1.1;
-  } else {
-    score += 8;
+  if (Math.abs(proteinLeft) <= 10) {
+    score += 100;
   }
 
-  if (remainingFat <= 0) {
-    score -= mealFat * 2.2;
-  } else if (mealFat > remainingFat) {
-    score -= (mealFat - remainingFat) * 2;
-  } else {
-    score += 8;
+  if (
+    Math.abs(carbsLeft) <= 10 &&
+    Math.abs(fatLeft) <= 10 &&
+    Math.abs(proteinLeft) <= 10
+  ) {
+    score += 250;
   }
 
-  if (mealProtein >= 25 && mealFat <= 12) {
-    score += 22;
+  if (carbsLeft < -10) {
+    score -= Math.abs(carbsLeft) * 5;
   }
 
-  if (mealProtein >= 30 && mealCarbs <= 20) {
-    score += 18;
+  if (fatLeft < -10) {
+    score -= Math.abs(fatLeft) * 12;
   }
 
-  if (mealCalories >= 500 && mealProtein < 25) {
-    score -= 25;
+  if (proteinLeft < -10) {
+    score -= Math.abs(proteinLeft) * 2;
   }
 
-  return score;
+  return {
+    score,
+    afterMeal: {
+      calories: caloriesLeft,
+      carbs: carbsLeft,
+      fat: fatLeft,
+      protein: proteinLeft,
+    },
+    withinTenGrams:
+      Math.abs(carbsLeft) <= 10 &&
+      Math.abs(fatLeft) <= 10 &&
+      Math.abs(proteinLeft) <= 10,
+  };
 }
 
 export function getTopMealRecommendations(
@@ -68,10 +102,18 @@ export function getTopMealRecommendations(
   }
 
   return meals
-    .map((meal) => ({
-      ...meal,
-      score: calculateMealScore(meal, remainingMacros),
-    }))
-    .sort((firstMeal, secondMeal) => secondMeal.score - firstMeal.score)
+    .map((meal) => {
+      const results = calculateMealScore(meal, remainingMacros);
+
+      return {
+        ...meal,
+        score: results.score,
+        afterMeal: results.afterMeal,
+        withinTenGrams: results.withinTenGrams,
+      };
+    })
+    .sort((firstMeal, secondMeal) => {
+      return secondMeal.score - firstMeal.score;
+    })
     .slice(0, limit);
 }
