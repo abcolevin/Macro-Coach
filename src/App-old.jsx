@@ -1,14 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
-
+import { useEffect, useState } from "react";
 import Dashboard from "./components/Dashboard";
 import Header from "./components/Header";
-import RestaurantBrowser from "./components/RestaurantBrowser";
 import { getTopMealRecommendations } from "./utils/recommendationEngine";
 import meals from "./data/meals";
-import { db } from "./firebase";
 import "./App.css";
-
+import RestaurantBrowser from "./components/RestaurantBrowser";
+import { db } from "./firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 const macroGoals = {
   calories: 1959,
   carbs: 205,
@@ -23,54 +21,37 @@ const emptyMacros = {
   protein: "",
 };
 
-const userDocument = doc(db, "users", "ryan");
-
 function getMealId(meal) {
   return `${meal.restaurant}-${meal.name}`;
 }
 
 function App() {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [selectedRestaurant, setSelectedRestaurant] = useState("");
-  const [todayMacros, setTodayMacros] = useState(emptyMacros);
-  const [favoriteIds, setFavoriteIds] = useState([]);
+const [selectedRestaurant, setSelectedRestaurant] = useState("");
+ const [todayMacros, setTodayMacros] = useState(emptyMacros);
 
-  const todayMacrosRef = useRef(emptyMacros);
-  const favoriteIdsRef = useRef([]);
+ const [favoriteIds, setFavoriteIds] = useState([]);
+useEffect(() => {
+  async function loadCloudData() {
+    const docRef = doc(db, "users", "ryan");
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      userDocument,
-      (documentSnapshot) => {
-        if (!documentSnapshot.exists()) {
-          return;
-        }
+    const docSnap = await getDoc(docRef);
 
-        const cloudData = documentSnapshot.data();
+    if (docSnap.exists()) {
+      const data = docSnap.data();
 
-        if (cloudData.todayMacros) {
-          const cloudMacros = {
-            ...emptyMacros,
-            ...cloudData.todayMacros,
-          };
-
-          todayMacrosRef.current = cloudMacros;
-          setTodayMacros(cloudMacros);
-        }
-
-        if (Array.isArray(cloudData.favoriteIds)) {
-          favoriteIdsRef.current = cloudData.favoriteIds;
-          setFavoriteIds(cloudData.favoriteIds);
-        }
-      },
-      (error) => {
-        console.error("Firestore synchronization error:", error);
+      if (data.todayMacros) {
+        setTodayMacros(data.todayMacros);
       }
-    );
 
-    return () => unsubscribe();
-  }, []);
+      if (data.favoriteIds) {
+        setFavoriteIds(data.favoriteIds);
+      }
+    }
+  }
 
+  loadCloudData();
+}, []);
   const numericMacros = {
     calories: Number(todayMacros.calories) || 0,
     carbs: Number(todayMacros.carbs) || 0,
@@ -109,6 +90,25 @@ function App() {
     favoriteIds.includes(getMealId(meal))
   );
 
+ useEffect(() => {
+  localStorage.setItem(
+    "todayMacros",
+    JSON.stringify(todayMacros)
+  );
+
+  setDoc(doc(db, "users", "ryan"), {
+    todayMacros,
+    favoriteIds,
+  });
+}, [todayMacros, favoriteIds]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "favoriteMeals",
+      JSON.stringify(favoriteIds)
+    );
+  }, [favoriteIds]);
+
   function updateMacro(event) {
     const { name, value } = event.target;
 
@@ -119,48 +119,21 @@ function App() {
     );
     const limitedValue = withoutLeadingZeros.slice(0, 4);
 
-    const nextMacros = {
-      ...todayMacrosRef.current,
+    setTodayMacros((currentMacros) => ({
+      ...currentMacros,
       [name]: limitedValue,
-    };
-
-    todayMacrosRef.current = nextMacros;
-    setTodayMacros(nextMacros);
-
-    setDoc(
-      userDocument,
-      {
-        todayMacros: nextMacros,
-      },
-      {
-        merge: true,
-      }
-    ).catch((error) => {
-      console.error("Could not save macros:", error);
-    });
+    }));
   }
 
   function toggleFavorite(meal) {
     const mealId = getMealId(meal);
-    const currentFavorites = favoriteIdsRef.current;
 
-    const nextFavorites = currentFavorites.includes(mealId)
-      ? currentFavorites.filter((id) => id !== mealId)
-      : [...currentFavorites, mealId];
-
-    favoriteIdsRef.current = nextFavorites;
-    setFavoriteIds(nextFavorites);
-
-    setDoc(
-      userDocument,
-      {
-        favoriteIds: nextFavorites,
-      },
-      {
-        merge: true,
+    setFavoriteIds((currentFavorites) => {
+      if (currentFavorites.includes(mealId)) {
+        return currentFavorites.filter((id) => id !== mealId);
       }
-    ).catch((error) => {
-      console.error("Could not save favorites:", error);
+
+      return [...currentFavorites, mealId];
     });
   }
 
@@ -251,15 +224,18 @@ function App() {
         />
       )}
 
-      {activeTab === "restaurants" && (
-        <RestaurantBrowser
-          meals={meals}
-          selectedRestaurant={selectedRestaurant}
-          setSelectedRestaurant={setSelectedRestaurant}
-          toggleFavorite={toggleFavorite}
-          isFavorite={isFavorite}
-        />
-      )}
+     {activeTab === "restaurants" && (
+  <RestaurantBrowser
+    meals={meals}
+    selectedRestaurant={selectedRestaurant}
+    setSelectedRestaurant={setSelectedRestaurant}
+    toggleFavorite={toggleFavorite}
+    isFavorite={isFavorite}
+  />
+)}
+
+
+
 
       {activeTab === "favorites" && (
         <main className="dashboard">
@@ -309,7 +285,6 @@ function App() {
                     >
                       <div>
                         <strong>{meal.restaurant}</strong>
-
                         <h3 style={{ margin: "6px 0" }}>
                           {meal.name}
                         </h3>
